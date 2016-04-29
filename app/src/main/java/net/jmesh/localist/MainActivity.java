@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mApiClient = new GoogleApiClient.Builder(this)
                 .addApi(ActivityRecognition.API)
                 .addApi(LocationServices.API)
-                //.addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
-                //.addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
                 .build();
 
         mApiClient.connect();
