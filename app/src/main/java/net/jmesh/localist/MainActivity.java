@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,11 +19,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.LocationServices;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     public GoogleApiClient mApiClient;
     private ResponseReceiver mReceiver;
@@ -47,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
         mApiClient = new GoogleApiClient.Builder(this)
                 .addApi(ActivityRecognition.API)
                 .addApi(LocationServices.API)
-                .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
-                .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
+                //.addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
+                //.addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) this)
                 .build();
 
         mApiClient.connect();
@@ -105,6 +107,16 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ActivityRecognizedService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(mApiClient, 1000, pendingIntent);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 
     public class ResponseReceiver extends BroadcastReceiver {
