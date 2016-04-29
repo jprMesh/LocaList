@@ -3,9 +3,12 @@ package net.jmesh.localist;
 
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,13 +27,20 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.LocationServices;
 
+import net.jmesh.localist.database.ReminderBaseHelper;
+import net.jmesh.localist.database.ReminderDbSchema.ReminderTable;
+
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     public GoogleApiClient mApiClient;
     private ResponseReceiver mReceiver;
+    private ReminderBaseHelper mDatabaseHelper;
+    private SQLiteDatabase mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mDatabaseHelper = new ReminderBaseHelper(getApplicationContext());
+        mDatabase = mDatabaseHelper.getWritableDatabase();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -60,11 +70,26 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                    ContentValues values = new ContentValues();
+                    values.put(ReminderTable.Cols.UUID, 0);  // update somehow
+                    values.put(ReminderTable.Cols.TITLE, "");
+                    values.put(ReminderTable.Cols.TYPE, "");
+                    values.put(ReminderTable.Cols.CONTENT, "");
+                    values.put(ReminderTable.Cols.LATITUDE, 0);
+                    values.put(ReminderTable.Cols.LONGITUDE, 0);
+                    mDatabase.insert(ReminderTable.NAME, null, values);
+                    long dbSize = getEntryCnt();
+                    String printMsg = "You now have " + dbSize + " entries in db";
+                    Snackbar.make(view, printMsg, Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
                 }
             });
         }
+    }
+
+    private long getEntryCnt() {
+        long cnt  = DatabaseUtils.queryNumEntries(mDatabase, "reminders");
+        return cnt;
     }
 
     @Override

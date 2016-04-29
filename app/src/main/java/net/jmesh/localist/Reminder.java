@@ -12,7 +12,7 @@ public class Reminder {
     private String mType;
     private String mContent;
     private double mLatitude;
-    private double mLongtitude;
+    private double mLongitude;
     private Date mDate;
 
     public Reminder() {
@@ -62,12 +62,12 @@ public class Reminder {
     public Location getLocation() {
         Location aLoc = new Location("dummyprovider");
         aLoc.setLatitude(mLatitude);
-        aLoc.setLongitude(mLongtitude);
+        aLoc.setLongitude(mLongitude);
         return aLoc;
     }
 
     public void setLocation(Location location) {
         mLatitude = location.getLatitude();
-        mLongtitude = location.getLongitude();
+        mLongitude = location.getLongitude();
     }
 }

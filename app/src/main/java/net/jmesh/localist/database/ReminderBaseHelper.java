@@ -25,7 +25,7 @@ public class ReminderBaseHelper extends SQLiteOpenHelper {
                 ReminderTable.Cols.TYPE + ", " +
                 ReminderTable.Cols.CONTENT + ", " +
                 ReminderTable.Cols.LATITUDE + ", " +
-                ReminderTable.Cols.LONGTITUDE + ", " +
+                ReminderTable.Cols.LONGITUDE + ", " +
                 ReminderTable.Cols.DATE +
                 ");"
         );
@@ -33,5 +33,7 @@ public class ReminderBaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + ReminderTable.NAME);
+        onCreate(db);
     }
 }
