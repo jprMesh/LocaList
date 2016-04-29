@@ -10,7 +10,7 @@ public class ReminderDbSchema {
             public static final String TYPE = "type";
             public static final String CONTENT = "content";
             public static final String LATITUDE = "latitude";
-            public static final String LONGTITUDE = "longtitude";
+            public static final String LONGITUDE = "longitude";
             public static final String DATE = "date";
         }
     }

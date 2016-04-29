@@ -25,7 +25,7 @@ public class ReminderBaseHelper extends SQLiteOpenHelper {
                 ReminderTable.Cols.TYPE + ", " +
                 ReminderTable.Cols.CONTENT + ", " +
                 ReminderTable.Cols.LATITUDE + ", " +
-                ReminderTable.Cols.LONGTITUDE + ", " +
+                ReminderTable.Cols.LONGITUDE + ", " +
                 ReminderTable.Cols.DATE +
                 ");"
         );
