@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -70,6 +71,7 @@ public class PageFragment extends Fragment {
         titletext.setInputType(InputType.TYPE_CLASS_TEXT);
         titletext.setTextColor(ContextCompat.getColor(getContext(), primary_text_light));
         titletext.setHint("TITLE");
+        titletext.setId(R.id.titlefield);
         titleDateLayout.addView(titletext);
 
         if (mPage == 1) {
@@ -90,6 +92,7 @@ public class PageFragment extends Fragment {
             bodyText.setVerticalScrollBarEnabled(true);
             bodyText.setBackground(null);
             bodyText.setHint("notes here");
+            bodyText.setId(R.id.bodytextfield);
             linlayout.addView(bodyText);
         } else if (mPage == 2) {
             final ImageView reminderbutton = new ImageView(getContext());
@@ -117,6 +120,14 @@ public class PageFragment extends Fragment {
             });
             titleDateLayout.addView(reminderbutton);
             linlayout.addView(titleDateLayout);
+
+            LinearLayout listitem = new LinearLayout(getContext());
+            CheckBox listbox = new CheckBox(getContext());
+            EditText listtext = new EditText(getContext());
+
+            listitem.addView(listbox);
+            listitem.addView(listtext);
+            linlayout.addView(listitem);
         }
         return view;
     }
