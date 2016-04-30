@@ -31,8 +31,6 @@ import java.text.SimpleDateFormat;
 
 import static android.R.color.primary_text_light;
 
-import net.jmesh.localist.database.ReminderDbSchema.ReminderTable;
-
 /**
  * Created by jonas on 4/27/16.
  */
@@ -131,6 +129,7 @@ public class PageFragment extends Fragment {
         }
         return view;
     }
+
 }
 
 class SampleFragmentPagerAdapter extends FragmentPagerAdapter {

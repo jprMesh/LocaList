@@ -1,6 +1,5 @@
 package net.jmesh.localist;
 
-
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
@@ -15,6 +14,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -27,8 +28,15 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.LocationServices;
 
+import net.jmesh.localist.PageFragment;
 import net.jmesh.localist.database.ReminderBaseHelper;
-import net.jmesh.localist.database.ReminderDbSchema.ReminderTable;
+import net.jmesh.localist.database.ReminderDbSchema;
+import net.jmesh.localist.database.ReminderDbSchema.NoteTable;
+import net.jmesh.localist.database.ReminderDbSchema.ListTable;
+
+import java.sql.Time;
+import java.util.Calendar;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -46,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         if (viewPager != null) {
             viewPager.setAdapter(new SampleFragmentPagerAdapter(getSupportFragmentManager(),
                     MainActivity.this));
@@ -70,26 +78,40 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ContentValues values = new ContentValues();
-                    values.put(ReminderTable.Cols.UUID, 0);  // update somehow
-                    values.put(ReminderTable.Cols.TITLE, "");
-                    values.put(ReminderTable.Cols.TYPE, "");
-                    values.put(ReminderTable.Cols.CONTENT, "");
-                    values.put(ReminderTable.Cols.LATITUDE, 0);
-                    values.put(ReminderTable.Cols.LONGITUDE, 0);
-                    mDatabase.insert(ReminderTable.NAME, null, values);
-                    long dbSize = getEntryCnt();
-                    String printMsg = "You now have " + dbSize + " entries in db";
-                    Snackbar.make(view, printMsg, Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+                    int pageID = viewPager.getCurrentItem();
+                    if (pageID == 0) {
+                        ContentValues values = new ContentValues();
+                        values.put(NoteTable.Cols.UUID, 0);  // update somehow
+                        values.put(NoteTable.Cols.TITLE, "");
+                        values.put(NoteTable.Cols.CONTENT, "");
+                        values.put(NoteTable.Cols.LATITUDE, 0);
+                        values.put(NoteTable.Cols.LONGITUDE, 0);
+                        Calendar c = Calendar.getInstance();
+                        long seconds = c.get(Calendar.SECOND);
+                        values.put(NoteTable.Cols.DATE, seconds);
+                        mDatabase.insert(NoteTable.NAME, null, values);
+                        long dbSize = getEntryCnt(NoteTable.NAME);
+                        String printMsg = "You now have " + dbSize + " note entries";
+                        Snackbar.make(view, printMsg, Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    } else if (pageID == 1) {
+                        ContentValues values = new ContentValues();
+                        values.put(ListTable.Cols.UUID, 0);  // update somehow
+                        values.put(ListTable.Cols.TITLE, "");
+                        values.put(ListTable.Cols.CONTENT, "");
+                        mDatabase.insert(ListTable.NAME, null, values);
+                        long dbSize = getEntryCnt(ListTable.NAME);
+                        String printMsg = "You now have " + dbSize + " list entries";
+                        Snackbar.make(view, printMsg, Snackbar.LENGTH_LONG)
+                                .setAction("Action", null).show();
+                    }
                 }
             });
         }
     }
 
-    private long getEntryCnt() {
-        long cnt  = DatabaseUtils.queryNumEntries(mDatabase, "reminders");
-        return cnt;
+    private long getEntryCnt(String table) {
+        return DatabaseUtils.queryNumEntries(mDatabase, table);
     }
 
     @Override

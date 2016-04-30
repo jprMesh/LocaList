@@ -5,23 +5,21 @@ import android.location.Location;
 import java.util.Date;
 import java.util.UUID;
 
-public class Reminder {
+public class ReminderNote {
 
     private UUID mId;
     private String mTitle;
-    private String mType;
     private String mContent;
     private double mLatitude;
     private double mLongitude;
     private Date mDate;
 
-    public Reminder() {
+    public ReminderNote() {
         this(UUID.randomUUID());
     }
 
-    public Reminder(UUID id) {
+    public ReminderNote(UUID id) {
         mId = id;
-        mDate = new Date();
     }
     public UUID getId() {
         return mId;
@@ -41,14 +39,6 @@ public class Reminder {
 
     public void setDate(Date date) {
         mDate = date;
-    }
-
-    public String getType() {
-        return mType;
-    }
-
-    public void setType(String type) {
-        mType = type;
     }
 
     public String getContent() {
