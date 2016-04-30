@@ -1,10 +1,12 @@
 package net.jmesh.localist;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -12,18 +14,23 @@ import android.support.v4.content.ContextCompat;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 
 import static android.R.color.primary_text_light;
+
+import net.jmesh.localist.database.ReminderDbSchema.ReminderTable;
 
 /**
  * Created by jonas on 4/27/16.
@@ -85,8 +92,29 @@ public class PageFragment extends Fragment {
             bodyText.setHint("notes here");
             linlayout.addView(bodyText);
         } else if (mPage == 2) {
-            ImageView reminderbutton = new ImageView(getContext());
-            reminderbutton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_star_black_36dp));
+            final ImageView reminderbutton = new ImageView(getContext());
+            reminderbutton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_star_border_black_36dp));
+            reminderbutton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PopupMenu popup = new PopupMenu(getContext(), reminderbutton);
+                    popup.getMenuInflater()
+                            .inflate(R.menu.reminder_popup, popup.getMenu());
+
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            reminderbutton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_star_black_36dp));
+                            Toast.makeText(getContext(),
+                                    "You Clicked : " + item.getTitle(),
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            return true;
+                        }
+                    });
+
+                    popup.show();
+                }
+            });
             titleDateLayout.addView(reminderbutton);
             linlayout.addView(titleDateLayout);
         }

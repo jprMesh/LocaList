@@ -1,0 +1,17 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="net.jmesh.localist.MainActivity">
+
+    <item
+        android:id="@+id/inCarButton"
+        android:title="In Vehicle"></item>
+    <item
+        android:id="@+id/walkingButton"
+        android:title="Walking"></item>
+    <item
+        android:id="@+id/sittingButton"
+        android:title="Sitting"></item>
+    <item
+        android:id="@+id/runningButton"
+        android:title="Running"></item>
+</menu>
