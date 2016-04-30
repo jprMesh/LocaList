@@ -20,7 +20,7 @@ public class ReminderCursorWrapper extends CursorWrapper {
     public Reminder getReminder() {
         String uuidString = getString(getColumnIndex(ReminderTable.Cols.UUID));
         String title = getString(getColumnIndex(ReminderTable.Cols.TITLE));
-        String type = getString(getColumnIndex(ReminderTable.Cols.TYPE));
+        int page = getInt(getColumnIndex(ReminderTable.Cols.PAGE));
         String content = getString(getColumnIndex(ReminderTable.Cols.CONTENT));
         double latitude = getDouble(getColumnIndex(ReminderTable.Cols.LATITUDE));
         double longitude = getDouble(getColumnIndex(ReminderTable.Cols.LONGITUDE));
@@ -31,7 +31,7 @@ public class ReminderCursorWrapper extends CursorWrapper {
 
         Reminder reminder = new Reminder(UUID.fromString(uuidString));
         reminder.setTitle(title);
-        reminder.setType(type);
+        reminder.setPage(page);
         reminder.setContent(content);
         reminder.setLocation(location);
         reminder.setDate(new Date(date));

@@ -9,7 +9,7 @@ public class Reminder {
 
     private UUID mId;
     private String mTitle;
-    private String mType;
+    private int mPage;
     private String mContent;
     private double mLatitude;
     private double mLongitude;
@@ -43,12 +43,12 @@ public class Reminder {
         mDate = date;
     }
 
-    public String getType() {
-        return mType;
+    public int getPage() {
+        return mPage;
     }
 
-    public void setType(String type) {
-        mType = type;
+    public void setPage(int page) {
+        mPage = page;
     }
 
     public String getContent() {

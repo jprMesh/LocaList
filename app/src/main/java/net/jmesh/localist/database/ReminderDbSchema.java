@@ -7,7 +7,7 @@ public class ReminderDbSchema {
         public static final class Cols {
             public static final String UUID = "uuid";
             public static final String TITLE = "title";
-            public static final String TYPE = "type";
+            public static final String PAGE = "page";
             public static final String CONTENT = "content";
             public static final String LATITUDE = "latitude";
             public static final String LONGITUDE = "longitude";

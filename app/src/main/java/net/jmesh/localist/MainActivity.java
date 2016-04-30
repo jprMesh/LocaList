@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                     ContentValues values = new ContentValues();
                     values.put(ReminderTable.Cols.UUID, 0);  // update somehow
                     values.put(ReminderTable.Cols.TITLE, "");
-                    values.put(ReminderTable.Cols.TYPE, "");
+                    values.put(ReminderTable.Cols.PAGE, "");
                     values.put(ReminderTable.Cols.CONTENT, "");
                     values.put(ReminderTable.Cols.LATITUDE, 0);
                     values.put(ReminderTable.Cols.LONGITUDE, 0);

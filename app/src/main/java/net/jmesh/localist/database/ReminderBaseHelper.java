@@ -22,7 +22,7 @@ public class ReminderBaseHelper extends SQLiteOpenHelper {
                 " _id integer primary key autoincrement, " +
                 ReminderTable.Cols.UUID + ", " +
                 ReminderTable.Cols.TITLE + ", " +
-                ReminderTable.Cols.TYPE + ", " +
+                ReminderTable.Cols.PAGE + ", " +
                 ReminderTable.Cols.CONTENT + ", " +
                 ReminderTable.Cols.LATITUDE + ", " +
                 ReminderTable.Cols.LONGITUDE + ", " +
