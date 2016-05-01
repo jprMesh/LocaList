@@ -44,6 +44,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import net.jmesh.localist.PageFragment;
 import net.jmesh.localist.database.ReminderBaseHelper;
+import net.jmesh.localist.database.ReminderDataBase;
 import net.jmesh.localist.database.ReminderDbSchema;
 import net.jmesh.localist.database.ReminderDbSchema.NoteTable;
 import net.jmesh.localist.database.ReminderDbSchema.ListTable;
@@ -59,16 +60,17 @@ public class MainActivity extends AppCompatActivity
 
     public GoogleApiClient mApiClient;
     private ResponseReceiver mReceiver;
-    private ReminderBaseHelper mDatabaseHelper;
     private SQLiteDatabase mDatabase;
     public GoogleMap mMap;
     public Location mLastLocation;
     public LocationManager mLocationManager;
+    private ReminderDataBase rDatabase;
+    private LocSingleton curLoc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mDatabaseHelper = new ReminderBaseHelper(getApplicationContext());
-        mDatabase = mDatabaseHelper.getWritableDatabase();
+        rDatabase = new ReminderDataBase();
+        mDatabase = rDatabase.getDB(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -225,6 +227,8 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         mApiClient.connect();
         super.onStart();
+
+
     }
 
     protected void onStop() {
@@ -243,6 +247,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location location) {
+        curLoc.setLocation(location);
+        mLastLocation = location;
     }
 
     @Override

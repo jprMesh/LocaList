@@ -4,8 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -26,9 +29,15 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import net.jmesh.localist.database.ReminderDataBase;
+import net.jmesh.localist.database.ReminderDbSchema;
+
 import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import static android.R.color.primary_text_light;
 
@@ -38,6 +47,9 @@ import static android.R.color.primary_text_light;
 public class PageFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
     private int mPage;
+    private SQLiteDatabase mDatabase;
+    private ReminderDataBase rDatabase;
+    private LocSingleton curLoc;
 
     public static PageFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -61,7 +73,7 @@ public class PageFragment extends Fragment {
 
         LinearLayout titleDateLayout = new LinearLayout(getContext());
         titleDateLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-
+        curLoc = new LocSingleton();
         if (mPage == 1) {
             EditText titletext = new EditText(getContext());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -93,6 +105,33 @@ public class PageFragment extends Fragment {
             linlayout.addView(bodyText);
 
             //Peerapat put stuff here
+            List<ReminderNote> dbEntries = new ArrayList<ReminderNote>();
+            rDatabase = new ReminderDataBase();
+            mDatabase = rDatabase.getDB(getContext());
+            String[] columns = new String[] { "uuid", "title",
+                    "content", "latitude", "longitude", "date"};
+            Location tmpLoc = curLoc.getLocation();
+            if (tmpLoc != null) {
+                double curlat = tmpLoc.getLatitude();
+                double curlong = tmpLoc.getLongitude();
+            }
+            Cursor cursor = mDatabase.rawQuery("select * from notes", null);
+            cursor.moveToFirst();
+            while (cursor.isAfterLast() == false) {
+                ReminderNote newNote = new ReminderNote();
+                newNote.setTitle(cursor.getString(cursor.getColumnIndex("title")));
+                newNote.setContent(cursor.getString(cursor.getColumnIndex("content")));
+                Location newLoc = new Location("dummyprovider");
+                newLoc.setLatitude(cursor.getDouble(cursor.getColumnIndex("latitude")));
+                newLoc.setLongitude(cursor.getDouble(cursor.getColumnIndex("longitude")));
+                newNote.setLocation(newLoc);
+                newNote.setDate(new Date(cursor.getLong(cursor.getColumnIndex("date"))));
+                dbEntries.add(newNote);
+                cursor.moveToNext();
+            }
+            if (dbEntries.size() > 0) {
+                titletext.setText(dbEntries.get(0).getTitle());
+            }
         } else if (mPage == 2) {
             EditText titletext = new EditText(getContext());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
