@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
+
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ import android.widget.Toast;
 
 import net.jmesh.localist.database.ReminderDataBase;
 import net.jmesh.localist.database.ReminderDbSchema;
+import net.jmesh.localist.MainActivity;
 
 import org.w3c.dom.Text;
 
@@ -149,11 +151,12 @@ public class PageFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     PopupMenu popup = new PopupMenu(getContext(), reminderbutton);
-                    popup.getMenuInflater()
-                            .inflate(R.menu.reminder_popup, popup.getMenu());
+                    popup.getMenuInflater().inflate(R.menu.reminder_popup, popup.getMenu());
 
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
+                            MainActivity theActivity = (MainActivity)getActivity();
+                            theActivity.setActivityField(item.getTitle().toString());
                             reminderbutton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_star_black_36dp));
                             Toast.makeText(getContext(),
                                     "You Clicked : " + item.getTitle(),

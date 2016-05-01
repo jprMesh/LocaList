@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity
     public LocationManager mLocationManager;
     private ReminderDataBase rDatabase;
     private LocSingleton curLoc;
+    private String activityField = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,10 +131,10 @@ public class MainActivity extends AppCompatActivity
                         values.put(ListTable.Cols.UUID, 0);  // update somehow
                         values.put(ListTable.Cols.TITLE, titletext.getText().toString());
                         values.put(ListTable.Cols.CONTENT, "");
-                        values.put(ListTable.Cols.ACTIVITY, "");
+                        values.put(ListTable.Cols.ACTIVITY, activityField);
                         mDatabase.insert(ListTable.NAME, null, values);
                         long dbSize = getEntryCnt(ListTable.NAME);
-                        String printMsg = titletext.getText().toString() + "\nYou now have " + dbSize + " list entries";
+                        String printMsg = activityField + "\nYou now have " + dbSize + " list entries";
                         Snackbar.make(view, printMsg, Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                     }
@@ -247,8 +248,17 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location location) {
-        curLoc.setLocation(location);
-        mLastLocation = location;
+        Location tmpLoc = new Location("dummyprovider");
+        tmpLoc.setLatitude(0);
+        tmpLoc.setLongitude(0);
+        if (location == null) {
+            tmpLoc.setLatitude(0);
+            tmpLoc.setLongitude(0);
+        } else {
+            tmpLoc = location;
+        }
+        curLoc.setLocation(tmpLoc);
+        mLastLocation = tmpLoc;
     }
 
     @Override
@@ -264,6 +274,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
 
+    }
+
+    public void setActivityField(String activity) {
+        activityField = activity;
     }
 
 }
