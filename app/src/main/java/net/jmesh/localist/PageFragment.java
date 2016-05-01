@@ -2,6 +2,7 @@ package net.jmesh.localist;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -36,7 +37,6 @@ import static android.R.color.primary_text_light;
  */
 public class PageFragment extends Fragment {
     public static final String ARG_PAGE = "ARG_PAGE";
-
     private int mPage;
 
     public static PageFragment newInstance(int page) {
@@ -62,17 +62,17 @@ public class PageFragment extends Fragment {
         LinearLayout titleDateLayout = new LinearLayout(getContext());
         titleDateLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        EditText titletext = new EditText(getContext());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.weight = 2f;
-        titletext.setLayoutParams(params);
-        titletext.setInputType(InputType.TYPE_CLASS_TEXT);
-        titletext.setTextColor(ContextCompat.getColor(getContext(), primary_text_light));
-        titletext.setHint("TITLE");
-        titletext.setId(R.id.titlefield);
-        titleDateLayout.addView(titletext);
-
         if (mPage == 1) {
+            EditText titletext = new EditText(getContext());
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.weight = 2f;
+            titletext.setLayoutParams(params);
+            titletext.setInputType(InputType.TYPE_CLASS_TEXT);
+            titletext.setTextColor(ContextCompat.getColor(getContext(), primary_text_light));
+            titletext.setHint("TITLE");
+            titletext.setId(R.id.titlefieldnote);
+            titleDateLayout.addView(titletext);
+
             TextView datetext = new TextView(getContext());
             long date = System.currentTimeMillis();
             SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy");
@@ -93,6 +93,16 @@ public class PageFragment extends Fragment {
             bodyText.setId(R.id.bodytextfield);
             linlayout.addView(bodyText);
         } else if (mPage == 2) {
+            EditText titletext = new EditText(getContext());
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.weight = 2f;
+            titletext.setLayoutParams(params);
+            titletext.setInputType(InputType.TYPE_CLASS_TEXT);
+            titletext.setTextColor(ContextCompat.getColor(getContext(), primary_text_light));
+            titletext.setHint("TITLE");
+            titletext.setId(R.id.titlefieldlist);
+            titleDateLayout.addView(titletext);
+
             final ImageView reminderbutton = new ImageView(getContext());
             reminderbutton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_star_border_black_36dp));
             reminderbutton.setOnClickListener(new View.OnClickListener() {

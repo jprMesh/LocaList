@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item type="id" name="titlefield" />
+    <item type="id" name="titlefieldnote" />
+    <item type="id" name="titlefieldlist" />
     <item type="id" name="bodytextfield" />
 </resources>

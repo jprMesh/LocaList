@@ -1,13 +1,18 @@
 package net.jmesh.localist;
 
+import android.Manifest;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,17 +21,25 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
 
 import net.jmesh.localist.PageFragment;
 import net.jmesh.localist.database.ReminderBaseHelper;
@@ -38,12 +51,18 @@ import java.sql.Time;
 import java.util.Calendar;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class MainActivity extends AppCompatActivity
+        implements GoogleApiClient.ConnectionCallbacks,
+                    GoogleApiClient.OnConnectionFailedListener,
+                    OnMapReadyCallback, LocationListener {
 
     public GoogleApiClient mApiClient;
     private ResponseReceiver mReceiver;
     private ReminderBaseHelper mDatabaseHelper;
     private SQLiteDatabase mDatabase;
+    public GoogleMap mMap;
+    public Location mLastLocation;
+    public LocationManager mLocationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,29 +98,39 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 @Override
                 public void onClick(View view) {
                     int pageID = viewPager.getCurrentItem();
+
+                    if (mLastLocation == null) {
+                        mLastLocation = new Location("dummyprovider");
+                        mLastLocation.setLatitude(0);
+                        mLastLocation.setLongitude(0);
+                    }
                     if (pageID == 0) {
+                        EditText titletext = (EditText)findViewById(R.id.titlefieldnote);
+                        EditText bodytext = (EditText)findViewById(R.id.bodytextfield);
                         ContentValues values = new ContentValues();
                         values.put(NoteTable.Cols.UUID, 0);  // update somehow
-                        values.put(NoteTable.Cols.TITLE, "");
-                        values.put(NoteTable.Cols.CONTENT, "");
-                        values.put(NoteTable.Cols.LATITUDE, 0);
-                        values.put(NoteTable.Cols.LONGITUDE, 0);
+                        values.put(NoteTable.Cols.TITLE, titletext.getText().toString());
+                        values.put(NoteTable.Cols.CONTENT, bodytext.getText().toString());
+                        values.put(NoteTable.Cols.LATITUDE, mLastLocation.getLatitude());
+                        values.put(NoteTable.Cols.LONGITUDE, mLastLocation.getLongitude());
                         Calendar c = Calendar.getInstance();
                         long seconds = c.get(Calendar.SECOND);
                         values.put(NoteTable.Cols.DATE, seconds);
                         mDatabase.insert(NoteTable.NAME, null, values);
                         long dbSize = getEntryCnt(NoteTable.NAME);
-                        String printMsg = "You now have " + dbSize + " note entries";
+                        String printMsg = titletext.getText().toString() + "\nYou now have " + dbSize + " note entries";
                         Snackbar.make(view, printMsg, Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                     } else if (pageID == 1) {
+                        EditText titletext = (EditText)findViewById(R.id.titlefieldlist);
                         ContentValues values = new ContentValues();
                         values.put(ListTable.Cols.UUID, 0);  // update somehow
-                        values.put(ListTable.Cols.TITLE, "");
+                        values.put(ListTable.Cols.TITLE, titletext.getText().toString());
                         values.put(ListTable.Cols.CONTENT, "");
+                        values.put(ListTable.Cols.ACTIVITY, "");
                         mDatabase.insert(ListTable.NAME, null, values);
                         long dbSize = getEntryCnt(ListTable.NAME);
-                        String printMsg = "You now have " + dbSize + " list entries";
+                        String printMsg = titletext.getText().toString() + "\nYou now have " + dbSize + " list entries";
                         Snackbar.make(view, printMsg, Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                     }
@@ -154,6 +183,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         Intent intent = new Intent(this, ActivityRecognizedService.class);
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(mApiClient, 1000, pendingIntent);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mApiClient);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mLastLocation.getLatitude(), mLastLocation.getLongitude()), 18));
+        }
+        try {
+            mLocationManager = (LocationManager) this
+                    .getSystemService(Context.LOCATION_SERVICE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 500, 30, this);
     }
 
     @Override
@@ -184,4 +224,35 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mApiClient.disconnect();
         super.onStop();
     }
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+        mMap = map;
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.e("Activity", "new location baby");
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 18));
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
 }
