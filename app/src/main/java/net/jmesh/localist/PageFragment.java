@@ -82,7 +82,6 @@ public class PageFragment extends Fragment {
             titleDateLayout.addView(datetext);
             linlayout.addView(titleDateLayout);
 
-
             EditText bodyText = new EditText(getContext());
             bodyText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             bodyText.setTextColor(Color.BLACK);
@@ -92,6 +91,8 @@ public class PageFragment extends Fragment {
             bodyText.setHint("notes here");
             bodyText.setId(R.id.bodytextfield);
             linlayout.addView(bodyText);
+
+            //Peerapat put stuff here
         } else if (mPage == 2) {
             EditText titletext = new EditText(getContext());
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
