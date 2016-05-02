@@ -144,7 +144,8 @@ public class MainActivity extends AppCompatActivity
 
         Intent intentfrom = getIntent();
         if (intentfrom.hasExtra("fromnotif")) {
-            //Peter clear database entry here. Kill reminder table maybe?
+            //Peter clear database entry here. Kill list table maybe?
+            mDatabase.execSQL("delete from lists");
         }
     }
 
