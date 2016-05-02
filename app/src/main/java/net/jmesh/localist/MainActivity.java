@@ -146,6 +146,7 @@ public class MainActivity extends AppCompatActivity
         if (intentfrom.hasExtra("fromnotif")) {
             //Peter clear database entry here. Kill list table maybe?
             mDatabase.execSQL("delete from lists");
+            mDatabase.execSQL("vacuum");
         }
     }
 
