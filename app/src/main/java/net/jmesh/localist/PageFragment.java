@@ -133,6 +133,7 @@ public class PageFragment extends Fragment {
             }
             if (dbEntries.size() > 0) {
                 titletext.setText(dbEntries.get(0).getTitle());
+                bodyText.setText(dbEntries.get(0).getContent());
             }
         } else if (mPage == 2) {
             EditText titletext = new EditText(getContext());
@@ -179,6 +180,25 @@ public class PageFragment extends Fragment {
             listitem.addView(listbox);
             listitem.addView(listtext);
             linlayout.addView(listitem);
+
+            List<ReminderNote> dbEntries = new ArrayList<ReminderNote>();
+            rDatabase = new ReminderDataBase();
+            mDatabase = rDatabase.getDB(getContext());
+            String[] columns = new String[] { "uuid", "title",
+                    "content", "activity"};
+            Cursor cursor = mDatabase.rawQuery("select * from lists", null);
+            cursor.moveToFirst();
+            while (cursor.isAfterLast() == false) {
+                ReminderNote newNote = new ReminderNote();
+                newNote.setTitle(cursor.getString(cursor.getColumnIndex("title")));
+                newNote.setContent(cursor.getString(cursor.getColumnIndex("content")));
+                newNote.setDate(new Date(cursor.getLong(cursor.getColumnIndex("activity"))));
+                dbEntries.add(newNote);
+                cursor.moveToNext();
+            }
+            if (dbEntries.size() > 0) {
+                titletext.setText(dbEntries.get(0).getTitle());
+            }
         }
         return view;
     }
