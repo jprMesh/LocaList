@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity
                         values.put(ListTable.Cols.ACTIVITY, activityField);
                         mDatabase.insert(ListTable.NAME, null, values);
                         long dbSize = getEntryCnt(ListTable.NAME);
-                        String printMsg = "\"" + activityField + "\" has been added to the lists database!\nYou now have " + dbSize + " list entries.";
+                        String printMsg = activityField + " Reminder: \"" + titletext.getText().toString() + "\" has been set!\nYou now have " + dbSize + " list entries.";
                         Snackbar.make(view, printMsg, Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                     }
