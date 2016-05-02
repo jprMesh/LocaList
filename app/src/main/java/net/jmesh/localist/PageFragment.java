@@ -104,7 +104,6 @@ public class PageFragment extends Fragment {
             bodyText.setId(R.id.bodytextfield);
             linlayout.addView(bodyText);
 
-            //Peerapat put stuff here
             List<ReminderNote> dbEntries = new ArrayList<ReminderNote>();
             rDatabase = new ReminderDataBase();
             mDatabase = rDatabase.getDB(getContext());
@@ -172,10 +171,55 @@ public class PageFragment extends Fragment {
             LinearLayout listitem = new LinearLayout(getContext());
             CheckBox listbox = new CheckBox(getContext());
             EditText listtext = new EditText(getContext());
-
+            listtext.setLayoutParams(params);
             listitem.addView(listbox);
             listitem.addView(listtext);
             linlayout.addView(listitem);
+
+            LinearLayout listitem2 = new LinearLayout(getContext());
+            CheckBox listbox2 = new CheckBox(getContext());
+            EditText listtext2 = new EditText(getContext());
+            listtext2.setLayoutParams(params);
+            listitem2.addView(listbox2);
+            listitem2.addView(listtext2);
+            linlayout.addView(listitem2);
+
+
+            LinearLayout titleDateLayout2 = new LinearLayout(getContext());
+            titleDateLayout2.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            EditText titletext2 = new EditText(getContext());
+            titletext2.setLayoutParams(params);
+            titletext2.setInputType(InputType.TYPE_CLASS_TEXT);
+            titletext2.setTextColor(ContextCompat.getColor(getContext(), primary_text_light));
+            titletext2.setHint("TITLE");
+            titletext2.setId(R.id.titlefieldlist);
+            titleDateLayout2.addView(titletext2);
+
+            final ImageView reminderbutton2 = new ImageView(getContext());
+            reminderbutton2.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_star_border_black_36dp));
+            reminderbutton2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    PopupMenu popup = new PopupMenu(getContext(), reminderbutton2);
+                    popup.getMenuInflater()
+                            .inflate(R.menu.reminder_popup, popup.getMenu());
+
+                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        public boolean onMenuItemClick(MenuItem item) {
+                            reminderbutton2.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_star_black_36dp));
+                            Toast.makeText(getContext(),
+                                    "You Clicked : " + item.getTitle(),
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            return true;
+                        }
+                    });
+
+                    popup.show();
+                }
+            });
+            titleDateLayout2.addView(reminderbutton2);
+            linlayout.addView(titleDateLayout2);
         }
         return view;
     }
