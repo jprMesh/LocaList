@@ -141,13 +141,6 @@ public class MainActivity extends AppCompatActivity
                 }
             });
         }
-
-        Intent intentfrom = getIntent();
-        if (intentfrom.hasExtra("fromnotif")) {
-            //Peter clear database entry here. Kill list table maybe?
-            mDatabase.execSQL("delete from lists");
-            mDatabase.execSQL("vacuum");
-        }
     }
 
     private long getEntryCnt(String table) {
@@ -183,6 +176,13 @@ public class MainActivity extends AppCompatActivity
         filter.addCategory(Intent.CATEGORY_DEFAULT);
         mReceiver = new ResponseReceiver();
         registerReceiver(mReceiver, filter);
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        Log.e("uh", "what");
+        mDatabase.execSQL("delete from lists");
+        mDatabase.execSQL("vacuum");
     }
 
     @Override
