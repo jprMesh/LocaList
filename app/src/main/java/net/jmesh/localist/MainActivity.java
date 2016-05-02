@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity
                         values.put(NoteTable.Cols.DATE, seconds);
                         mDatabase.insert(NoteTable.NAME, null, values);
                         long dbSize = getEntryCnt(NoteTable.NAME);
-                        String printMsg = titletext.getText().toString() + "\nYou now have " + dbSize + " note entries";
+                        String printMsg = "\"" + titletext.getText().toString() + "\" has been added to the notes database!\nYou now have " + dbSize + " note entries.";
                         Snackbar.make(view, printMsg, Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                     } else if (pageID == 1) {
@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity
                         values.put(ListTable.Cols.ACTIVITY, activityField);
                         mDatabase.insert(ListTable.NAME, null, values);
                         long dbSize = getEntryCnt(ListTable.NAME);
-                        String printMsg = activityField + "\nYou now have " + dbSize + " list entries";
+                        String printMsg = "\"" + activityField + "\" has been added to the lists database!\nYou now have " + dbSize + " list entries.";
                         Snackbar.make(view, printMsg, Snackbar.LENGTH_LONG)
                                 .setAction("Action", null).show();
                     }
