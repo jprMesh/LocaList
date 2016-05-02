@@ -3,4 +3,5 @@
     <item type="id" name="titlefieldnote" />
     <item type="id" name="titlefieldlist" />
     <item type="id" name="bodytextfield" />
+    <item type="id" name="activitytextfield" />
 </resources>

@@ -10,11 +10,13 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
+
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,6 +33,7 @@ import android.widget.Toast;
 
 import net.jmesh.localist.database.ReminderDataBase;
 import net.jmesh.localist.database.ReminderDbSchema;
+import net.jmesh.localist.MainActivity;
 
 import org.w3c.dom.Text;
 
@@ -130,6 +133,7 @@ public class PageFragment extends Fragment {
             }
             if (dbEntries.size() > 0) {
                 titletext.setText(dbEntries.get(0).getTitle());
+                bodyText.setText(dbEntries.get(0).getContent());
             }
         } else if (mPage == 2) {
             EditText titletext = new EditText(getContext());
@@ -148,11 +152,12 @@ public class PageFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     PopupMenu popup = new PopupMenu(getContext(), reminderbutton);
-                    popup.getMenuInflater()
-                            .inflate(R.menu.reminder_popup, popup.getMenu());
+                    popup.getMenuInflater().inflate(R.menu.reminder_popup, popup.getMenu());
 
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
+                            MainActivity theActivity = (MainActivity)getActivity();
+                            theActivity.setActivityField(item.getTitle().toString());
                             reminderbutton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_star_black_36dp));
                             Toast.makeText(getContext(),
                                     "You Clicked : " + item.getTitle(),
@@ -184,6 +189,16 @@ public class PageFragment extends Fragment {
             listitem2.addView(listtext2);
             linlayout.addView(listitem2);
 
+            View ruler = new View(getContext());
+            ruler.setBackgroundColor(0xBB222222);
+            float scale = getResources().getDisplayMetrics().density;
+            int dpAsPixels1 = (int) (15*scale + 0.5f);
+            int dpAsPixels2 = (int) (5*scale + 0.5f);
+            int dpAsPixels3 = (int) (1*scale + 0.5f);
+            LinearLayout.LayoutParams params4 = new LinearLayout.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT, dpAsPixels3);
+            params4.setMargins(0,dpAsPixels2,0,dpAsPixels1);
+            ruler.setLayoutParams(params4);
+            linlayout.addView(ruler);
 
             LinearLayout titleDateLayout2 = new LinearLayout(getContext());
             titleDateLayout2.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -220,6 +235,25 @@ public class PageFragment extends Fragment {
             });
             titleDateLayout2.addView(reminderbutton2);
             linlayout.addView(titleDateLayout2);
+
+            List<ReminderNote> dbEntries = new ArrayList<ReminderNote>();
+            rDatabase = new ReminderDataBase();
+            mDatabase = rDatabase.getDB(getContext());
+            String[] columns = new String[] { "uuid", "title",
+                    "content", "activity"};
+            Cursor cursor = mDatabase.rawQuery("select * from lists", null);
+            cursor.moveToFirst();
+            while (cursor.isAfterLast() == false) {
+                ReminderNote newNote = new ReminderNote();
+                newNote.setTitle(cursor.getString(cursor.getColumnIndex("title")));
+                newNote.setContent(cursor.getString(cursor.getColumnIndex("content")));
+                newNote.setDate(new Date(cursor.getLong(cursor.getColumnIndex("activity"))));
+                dbEntries.add(newNote);
+                cursor.moveToNext();
+            }
+            if (dbEntries.size() > 0) {
+                titletext.setText(dbEntries.get(0).getTitle());
+            }
         }
         return view;
     }
