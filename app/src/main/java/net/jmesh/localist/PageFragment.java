@@ -1,5 +1,7 @@
 package net.jmesh.localist;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -112,11 +114,8 @@ public class PageFragment extends Fragment {
             mDatabase = rDatabase.getDB(getContext());
             String[] columns = new String[] { "uuid", "title",
                     "content", "latitude", "longitude", "date"};
-            Location tmpLoc = curLoc.getLocation();
-            if (tmpLoc != null) {
-                double curlat = tmpLoc.getLatitude();
-                double curlong = tmpLoc.getLongitude();
-            }
+            double curlat = curLoc.getLat();
+            double curlon = curLoc.getLon();
             Cursor cursor = mDatabase.rawQuery("select * from notes", null);
             cursor.moveToFirst();
             while (cursor.isAfterLast() == false) {
@@ -156,7 +155,7 @@ public class PageFragment extends Fragment {
 
                     popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                         public boolean onMenuItemClick(MenuItem item) {
-                            MainActivity theActivity = (MainActivity)getActivity();
+                            MainActivity theActivity = (MainActivity) getActivity();
                             theActivity.setActivityField(item.getTitle().toString());
                             reminderbutton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_star_black_36dp));
                             Toast.makeText(getContext(),
@@ -173,73 +172,10 @@ public class PageFragment extends Fragment {
             titleDateLayout.addView(reminderbutton);
             linlayout.addView(titleDateLayout);
 
-            LinearLayout listitem = new LinearLayout(getContext());
-            CheckBox listbox = new CheckBox(getContext());
-            EditText listtext = new EditText(getContext());
-            listtext.setLayoutParams(params);
-            listitem.addView(listbox);
-            listitem.addView(listtext);
-            linlayout.addView(listitem);
-
-            LinearLayout listitem2 = new LinearLayout(getContext());
-            CheckBox listbox2 = new CheckBox(getContext());
-            EditText listtext2 = new EditText(getContext());
-            listtext2.setLayoutParams(params);
-            listitem2.addView(listbox2);
-            listitem2.addView(listtext2);
-            linlayout.addView(listitem2);
-
-            View ruler = new View(getContext());
-            ruler.setBackgroundColor(0xBB222222);
-            float scale = getResources().getDisplayMetrics().density;
-            int dpAsPixels1 = (int) (15*scale + 0.5f);
-            int dpAsPixels2 = (int) (5*scale + 0.5f);
-            int dpAsPixels3 = (int) (1*scale + 0.5f);
-            LinearLayout.LayoutParams params4 = new LinearLayout.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT, dpAsPixels3);
-            params4.setMargins(0,dpAsPixels2,0,dpAsPixels1);
-            ruler.setLayoutParams(params4);
-            linlayout.addView(ruler);
-
-            LinearLayout titleDateLayout2 = new LinearLayout(getContext());
-            titleDateLayout2.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            EditText titletext2 = new EditText(getContext());
-            titletext2.setLayoutParams(params);
-            titletext2.setInputType(InputType.TYPE_CLASS_TEXT);
-            titletext2.setTextColor(ContextCompat.getColor(getContext(), primary_text_light));
-            titletext2.setHint("TITLE");
-            titletext2.setId(R.id.titlefieldlist);
-            titleDateLayout2.addView(titletext2);
-
-            final ImageView reminderbutton2 = new ImageView(getContext());
-            reminderbutton2.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_star_border_black_36dp));
-            reminderbutton2.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    PopupMenu popup = new PopupMenu(getContext(), reminderbutton2);
-                    popup.getMenuInflater()
-                            .inflate(R.menu.reminder_popup, popup.getMenu());
-
-                    popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        public boolean onMenuItemClick(MenuItem item) {
-                            reminderbutton2.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.ic_star_black_36dp));
-                            Toast.makeText(getContext(),
-                                    "You Clicked : " + item.getTitle(),
-                                    Toast.LENGTH_SHORT
-                            ).show();
-                            return true;
-                        }
-                    });
-
-                    popup.show();
-                }
-            });
-            titleDateLayout2.addView(reminderbutton2);
-            linlayout.addView(titleDateLayout2);
-
             List<ReminderNote> dbEntries = new ArrayList<ReminderNote>();
             rDatabase = new ReminderDataBase();
             mDatabase = rDatabase.getDB(getContext());
-            String[] columns = new String[] { "uuid", "title",
+            String[] columns = new String[]{"uuid", "title",
                     "content", "activity"};
             Cursor cursor = mDatabase.rawQuery("select * from lists", null);
             cursor.moveToFirst();

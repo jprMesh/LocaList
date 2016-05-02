@@ -141,6 +141,11 @@ public class MainActivity extends AppCompatActivity
                 }
             });
         }
+
+        Intent intentfrom = getIntent();
+        if (intentfrom.hasExtra("fromnotif")) {
+            //Peter clear database entry here. Kill reminder table maybe?
+        }
     }
 
     private long getEntryCnt(String table) {
@@ -248,17 +253,16 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLocationChanged(Location location) {
-        Location tmpLoc = new Location("dummyprovider");
-        tmpLoc.setLatitude(0);
-        tmpLoc.setLongitude(0);
         if (location == null) {
-            tmpLoc.setLatitude(0);
-            tmpLoc.setLongitude(0);
+            curLoc.setLocation(0, 0);
         } else {
-            tmpLoc = location;
+            try {
+                curLoc.setLocation(location.getLatitude(), location.getLongitude());
+            } catch (Exception e) {
+                // do nth
+            }
         }
-        curLoc.setLocation(tmpLoc);
-        mLastLocation = tmpLoc;
+        mLastLocation = location;
     }
 
     @Override

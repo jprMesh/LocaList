@@ -6,13 +6,16 @@ import android.location.Location;
  * Created by pluxsuwong on 4/30/16.
  */
 public class LocSingleton {
-    private static Location loc;
+    private static double lat;
+    private static double lon;
 
-    public Location getLocation() {
-        return loc;
+    public double getLat() {
+        return lat;
     }
 
-    public void setLocation(Location loc) {
-        this.loc = loc;
+    public double getLon() { return lon; }
+
+    public void setLocation(double lat, double lon) {
+        this.lat = lat; this.lon = lon;
     }
 }
