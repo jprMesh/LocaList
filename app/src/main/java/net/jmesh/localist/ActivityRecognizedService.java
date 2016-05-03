@@ -149,6 +149,7 @@ public class ActivityRecognizedService extends IntentService {
         PendingIntent intent = PendingIntent.getActivity(getApplicationContext(), 0,
                 notificationIntent, 0);
         nb.setContentIntent(intent);
+        nb.setVibrate(new long[] {1000, 1000, 200, 200});
         if (dbEntries.size() > 0) {
             nb.setContentText(dbEntries.get(0).getTitle() + ". (You are " + tmpStr + ").");
             Notification notification = nb.build();
